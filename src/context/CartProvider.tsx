@@ -17,6 +17,7 @@ const REDUCER_ACTION_TYPE = {
   REMOVE: "REMOVE",
   QUANTITY: "QUANTITY",
   SUBMIT: "SUBMIT",
+  DELETE: "DELETE",
 };
 
 export type ReducerActionType = typeof REDUCER_ACTION_TYPE;
@@ -44,6 +45,22 @@ const reducer = (
       );
 
       const qty: number = itemExists ? itemExists.qty++ : 1;
+
+      return { ...state, cart: [...filteredCart, { sku, name, price, qty }] };
+    }
+    case REDUCER_ACTION_TYPE.DELETE: {
+      if (!action.payload) throw new Error("action.payload missing in ADD");
+
+      const { sku, name, price } = action.payload;
+      const filteredCart: CartItemType[] = state.cart.filter(
+        (item) => item.sku !== sku
+      );
+
+      const itemExists: CartItemType | undefined = state.cart.find(
+        (item) => item.sku === sku
+      );
+
+      const qty: number = itemExists ? itemExists.qty-- : 0;
 
       return { ...state, cart: [...filteredCart, { sku, name, price, qty }] };
     }
