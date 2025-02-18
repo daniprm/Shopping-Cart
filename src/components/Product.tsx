@@ -1,6 +1,11 @@
 import { ProductType } from "../context/ProductsProvider";
 import { ReducerActionType, ReducerAction } from "../context/CartProvider";
 import { ReactElement, memo } from "react";
+import { Box, Button, Typography, IconButton } from "@mui/material";
+import useCart from "../hooks/useCart";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import { useDarkMode } from "../context/DarkModeContext";
 
 type PropsType = {
   product: ProductType;
@@ -15,27 +20,170 @@ const Product = ({
   REDUCER_ACTIONS,
   inCart,
 }: PropsType): ReactElement => {
+  const { isDarkMode } = useDarkMode();
+
   const img: string = new URL(`../images/${product.sku}.jpg`, import.meta.url)
     .href;
   console.log(img);
 
+  const { cart } = useCart();
+
+  const ItemCount = () => {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          gap: 3,
+          alignItems: "center",
+          justifyContent: "right",
+        }}
+      >
+        <IconButton
+          sx={
+            isDarkMode
+              ? {
+                  bgcolor: "#FFB22C",
+                  ":hover": { bgcolor: "#eda11d" },
+                  borderRadius: 0,
+                  border: "2px solid white",
+                  color: "black",
+                  height: "25px",
+                  width: "25px",
+                  transiion: "1s",
+                }
+              : {
+                  bgcolor: "#FFB22C",
+                  ":hover": { bgcolor: "#eda11d" },
+                  borderRadius: 0,
+                  border: "2px solid black",
+                  color: "black",
+                  height: "25px",
+                  width: "25px",
+                  transiion: "1s",
+                }
+          }
+          onClick={onDeleteItem}
+        >
+          <RemoveIcon />
+        </IconButton>
+        <Typography>
+          {cart.find((item) => {
+            return item.sku === product.sku;
+          })?.qty || 0}
+        </Typography>
+        <IconButton
+          sx={
+            isDarkMode
+              ? {
+                  bgcolor: "#FFB22C",
+                  ":hover": { bgcolor: "#eda11d" },
+                  borderRadius: 0,
+                  border: "2px solid white",
+                  color: "black",
+                  height: "25px",
+                  width: "25px",
+                  transition: "1s",
+                }
+              : {
+                  bgcolor: "#FFB22C",
+                  ":hover": { bgcolor: "#eda11d" },
+                  borderRadius: 0,
+                  border: "2px solid black",
+                  color: "black",
+                  height: "25px",
+                  width: "25px",
+                  transition: "1s",
+                }
+          }
+          onClick={onAddToCart}
+        >
+          <AddIcon />
+        </IconButton>
+      </Box>
+    );
+  };
+
+  const onDeleteItem = () => {
+    if (cart.find((item) => item.sku === product.sku)!.qty > 1)
+      dispatch({
+        type: REDUCER_ACTIONS.DELETE,
+        payload: { ...product, qty: 0 },
+      });
+    else {
+      dispatch({
+        type: REDUCER_ACTIONS.REMOVE,
+        payload: { ...product, qty: 0 },
+      });
+    }
+  };
+
   const onAddToCart = () =>
     dispatch({ type: REDUCER_ACTIONS.ADD, payload: { ...product, qty: 1 } });
 
-  const itemInCart = inCart ? " → Item in Cart: ✔️" : null;
+  const itemInCart = inCart ? <ItemCount /> : null;
 
   const content = (
     <article className="product">
-      <h3>{product.name}</h3>
-      <img src={img} alt={product.name} className="product__img" />
-      <p>
-        {new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(product.price)}
-        {itemInCart}
-      </p>
-      <button onClick={onAddToCart}>Add to Cart</button>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 1,
+          mt: 4,
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: "bold",
+          }}
+        >
+          {product.name}
+        </Typography>
+        <img
+          src={img}
+          alt={product.name}
+          className={isDarkMode ? "product__img_dark" : "product__img"}
+        />
+        <Typography sx={{ py: 2 }}>
+          {new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          }).format(product.price)}
+          {itemInCart}
+        </Typography>
+      </Box>
+      <Button
+        variant="contained"
+        onClick={onAddToCart}
+        sx={
+          isDarkMode
+            ? {
+                mt: 1,
+                bgcolor: "#FFB22C",
+                ":hover": { bgcolor: "#eda11d" },
+                fontWeight: "bold",
+                borderBottom: "4px solid white",
+                borderRight: "4px solid white",
+                borderRadius: 0,
+                color: "black",
+                transition: "1s",
+              }
+            : {
+                mt: 1,
+                bgcolor: "#FFB22C",
+                ":hover": { bgcolor: "#eda11d" },
+                fontWeight: "bold",
+                borderBottom: "4px solid black",
+                borderRight: "4px solid black",
+                borderRadius: 0,
+                color: "black",
+                transition: "1s",
+              }
+        }
+      >
+        Add to Cart
+      </Button>
     </article>
   );
 
