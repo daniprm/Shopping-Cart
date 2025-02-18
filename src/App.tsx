@@ -4,8 +4,12 @@ import Footer from "./components/Footer";
 import Cart from "./components/Cart";
 import ProductList from "./components/ProductList";
 import { useState } from "react";
+import { Container, Box } from "@mui/material";
+import { useDarkMode } from "./context/DarkModeContext";
 
 function App() {
+  const { isDarkMode } = useDarkMode();
+
   const [viewCart, setViewCart] = useState<boolean>(false);
 
   const pageContent = viewCart ? <Cart /> : <ProductList />;
@@ -13,8 +17,18 @@ function App() {
   const content = (
     <>
       <Header viewCart={viewCart} setViewCart={setViewCart} />
-      {pageContent}
-      <Footer viewCart={viewCart} />
+      <Box
+        sx={
+          isDarkMode
+            ? { bgcolor: "black", color: "white", transition: "1s" }
+            : { transition: "1s" }
+        }
+      >
+        <Container>
+          {pageContent}
+          <Footer viewCart={viewCart} />
+        </Container>
+      </Box>
     </>
   );
 

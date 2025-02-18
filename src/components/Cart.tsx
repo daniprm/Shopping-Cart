@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import useCart from "../hooks/useCart";
 import CartLineItem from "./CartLineItem";
+import { Box, Button, Typography } from "@mui/material";
 
 const Cart = () => {
   const [confirm, setConfirm] = useState<boolean>(false);
@@ -13,9 +13,20 @@ const Cart = () => {
   };
 
   const pageContent = confirm ? (
-    <h2>Thank you for your order.</h2>
+    <Typography
+      variant="h4"
+      sx={{
+        py: 4,
+      }}
+    >
+      Thank you for your order.
+    </Typography>
   ) : (
-    <>
+    <Box
+      sx={{
+        py: 4,
+      }}
+    >
       <h2 className="offscreen">Cart</h2>
       <ul className="cart">
         {cart.map((item) => {
@@ -29,18 +40,50 @@ const Cart = () => {
           );
         })}
       </ul>
-      <div className="cart__totals">
-        <p>Total Items: {totalItems}</p>
-        <p>Total Price: {totalPrice}</p>
-        <button
-          className="cart__submit"
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 1,
+        }}
+      >
+        <Typography fontWeight={"bold"}>Total Items: {totalItems}</Typography>
+        <Typography fontWeight={"bold"}>Total Price: {totalPrice}</Typography>
+        <Button
           disabled={!totalItems}
           onClick={onSubmitOrder}
+          variant="contained"
+          sx={
+            totalItems
+              ? {
+                  backgroundColor: "#FFB22C",
+                  color: "black",
+                  fontWeight: "bold",
+                  ":hover": { backgroundColor: "#eda11d" },
+                  width: {
+                    xs: 180,
+                    md: 350,
+                  },
+                  borderRight: "4px solid black",
+                  borderBottom: "4px solid black",
+                }
+              : {
+                  backgroundColor: "#FFB22C",
+                  color: "black",
+                  fontWeight: "bold",
+                  ":hover": { backgroundColor: "#eda11d" },
+                  width: {
+                    xs: 180,
+                    md: 350,
+                  },
+                }
+          }
         >
           Place Order
-        </button>
-      </div>
-    </>
+        </Button>
+      </Box>
+    </Box>
   );
 
   const content = <main className="main main--cart">{pageContent}</main>;

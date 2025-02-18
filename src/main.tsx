@@ -5,12 +5,15 @@ import App from "./App.tsx";
 
 import { CartProvider } from "./context/CartProvider.tsx";
 import { ProductsProvider } from "./context/ProductsProvider.tsx";
+import DarkModeContextProvider from "./context/DarkModeContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ProductsProvider>
       <CartProvider>
-        <App />
+        <DarkModeContextProvider>
+          <App />
+        </DarkModeContextProvider>
       </CartProvider>
     </ProductsProvider>
   </StrictMode>
